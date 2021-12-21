@@ -1,0 +1,1 @@
+s3_buc_name = "skoc10_variables_tfvars"
