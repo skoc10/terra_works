@@ -12,17 +12,44 @@ terraform {
     }
   }
 }
-/* resource "aws_instance" "tf-ec2" {
-  ami           = "ami-0ed9277fb7eb570c9"
-  instance_type = "t2.micro"
-  key_name      = "key"    # write your pem file without .pem extension>
-  tags = {
-    "Name" = "tf-ec2"
+
+data "template_file" "init" {
+  template = file("${path.module}/userdata.sh")
+
+  vars = {
+    rds_endpoint = "${aws_instance.test.public_ip}"
   }
-} */
+}
+resource "aws_instance" "test"  {
+  ami           = var.aws_ami
 
+  instance_type = var.instance_type
+  security_groups = [aws_security_group.lt_sg.id]
 
-resource "aws_s3_bucket" "tf-s3" {
-  bucket = var.s3_buc_name
-  acl    = "private"
+  user_data       = data.template_file.init.rendered
+ 
+  key_name        = var.key_name
+}
+
+resource "aws_security_group" "lt_sg" {
+  name        = "lt_sg"
+  description = "launch template security group"
+  ingress {
+    from_port   = 80
+    to_port     = 80
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+  ingress {
+    from_port   = 22
+    to_port     = 22
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
 }
