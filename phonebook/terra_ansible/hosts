@@ -1,0 +1,5 @@
+[masters]
+52.51.138.1 ansible_user=ubuntu ansible_private_key_file=/path-to-your-keyfile/docker-key.pem
+[workers]
+34.240.19.111 ansible_user=ubuntu ansible_private_key_file=/path-to-your-keyfile/docker-key.pem
+52.208.83.236 ansible_user=ubuntu ansible_private_key_file=/path-to-your-keyfile/docker-key.pem

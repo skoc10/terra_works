@@ -52,14 +52,14 @@ resource "aws_instance" "manager" {
   }
   provisioner "remote-exec" {
     inline = [
-      "sudo sleep 180",
+      "sudo sleep 220",
       "docker swarm init --advertise-addr ${self.private_ip}",
       "docker swarm join-token manager --quiet > /home/ec2-user/manager-token.txt",
       "docker swarm join-token worker --quiet > /home/ec2-user/worker-token.txt",
       "docker service create --name=viz --publish=8080:8080/tcp --constraint=node.role==manager --mount=type=bind,src=/var/run/docker.sock,dst=/var/run/docker.sock dockersamples/visualizer",
       "cd /home/ec2-user/phonebook_Dockerswarm_ECR",
       "docker image build -t skoc10/phonebookswarm:latest .",
-      "docker stack deploy -c ./docker-compose.yml phonebook"
+      #"docker stack deploy -c ./docker-compose.yml phonebook"
     ]
   }        
 }
