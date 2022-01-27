@@ -43,7 +43,8 @@ resource "aws_instance" "manager" {
     type = "ssh"
     host = self.public_ip
     user = "ec2-user"
-    private_key = "${file("/Users/koc/Desktop/key_AWS/key.pem")}"
+    #private_key = "${file("/Users/koc/Desktop/key_AWS/key.pem")}"
+    private_key = file("key.pem")
   }
   provisioner "local-exec" {
     # Keep in a local file the swarm manager IP address
@@ -51,7 +52,7 @@ resource "aws_instance" "manager" {
   }
   provisioner "remote-exec" {
     inline = [
-      "sudo sleep 240",
+      "sudo sleep 180",
       "docker swarm init --advertise-addr ${self.private_ip}",
       "docker swarm join-token manager --quiet > /home/ec2-user/manager-token.txt",
       "docker swarm join-token worker --quiet > /home/ec2-user/worker-token.txt",
@@ -75,7 +76,7 @@ resource "aws_instance" "manager2" {
       type = "ssh"
       host = self.public_ip
       user = "ec2-user"
-      private_key = "${file("/Users/koc/Desktop/key_AWS/key.pem")}"
+      private_key = file("key.pem")
     }
   
     tags = {
@@ -99,9 +100,9 @@ resource "aws_instance" "manager2" {
         ]
     }
 
-    depends_on = [
+    /* depends_on = [
       aws_instance.manager,
-    ]
+    ] */
 }
 resource "aws_instance" "worker" {
     count           = 2
@@ -115,7 +116,7 @@ resource "aws_instance" "worker" {
       type = "ssh"
       host = self.public_ip
       user = "ec2-user"
-      private_key = "${file("/Users/koc/Desktop/key_AWS/key.pem")}"
+      private_key = file("key.pem")
     }
   
     tags = {
@@ -138,9 +139,9 @@ resource "aws_instance" "worker" {
         ]
     }
 
-    depends_on = [
+    /* depends_on = [
       aws_instance.manager,
-    ]
+    ] */
 }
 resource "aws_security_group" "tf-docker-sec-gr" {
   name = "docker-swarm-sec-gr"
@@ -186,6 +187,11 @@ resource "aws_security_group" "tf-docker-sec-gr" {
 output "manager_ip" {
   description = "Swarm Manager IP"
   value = "${aws_instance.manager.public_ip}"
+}
+
+output "manager2_ip" {
+  description = "Swarm Manager IP"
+  value = "${aws_instance.manager2.*.public_ip}"
 }
 
 output "workers_ip" {
