@@ -20,7 +20,7 @@ data "aws_caller_identity" "current" {}
 locals {
   github-email = "skoc10ds@gmail.com"                      # you need to change this line
   github-username = "skoc10"                              # you need to change this line
-  github-token = "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"      # you need to change this line
+  github-token = "************"      # you need to change this line
   key_pair="key"            # you need to change this line
   pem_key_address = "/Users/koc/Desktop/key_AWS/key.pem"              # you need to change this line
 }
