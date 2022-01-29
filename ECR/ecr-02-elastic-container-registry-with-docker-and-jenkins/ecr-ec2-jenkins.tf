@@ -18,11 +18,11 @@ provider "github" {
 data "aws_caller_identity" "current" {}
 
 locals {
-  github-email = "serdar@clarusway.com"                      # you need to change this line
-  github-username = "serdarcw"                              # you need to change this line
-  github-token = ""      # you need to change this line
-  key_pair=""            # you need to change this line
-  pem_key_address = "~/Downloads/serdar.pem"              # you need to change this line
+  github-email = "skoc10ds@gmail.com"                      # you need to change this line
+  github-username = "skoc10"                              # you need to change this line
+  github-token = "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"      # you need to change this line
+  key_pair="key"            # you need to change this line
+  pem_key_address = "/Users/koc/Desktop/key_AWS/key.pem"              # you need to change this line
 }
 
 resource "github_repository" "githubrepo" {
@@ -84,7 +84,7 @@ resource "aws_iam_instance_profile" "ec2_profile" {
 resource "aws_instance" "jenkins-server" {
   ami             = "ami-087c17d1fe0178315"
   instance_type   = "t2.small"
-  key_name        = local.key_pair  # you need to change this line
+  key_name        = local.key_pair  
   root_block_device {
       volume_size = 16
   } 

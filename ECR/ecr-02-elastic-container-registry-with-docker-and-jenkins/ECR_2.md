@@ -183,7 +183,7 @@ Press "i" to edit
 pipeline {
     agent any
     environment {
-        ECR_REGISTRY = "<aws_account_id>.dkr.ecr.us-east-1.amazonaws.com"
+        ECR_REGISTRY = "661207260840.dkr.ecr.us-east-1.amazonaws.com"
         APP_REPO_NAME= "clarusway/to-do-app"
     }
     stages {
@@ -248,7 +248,7 @@ PATH="/usr/local/bin/:${env.PATH}"
 
 ```html
 vi src/static/js/app.js
- <p className="text-center">You have no todo task yet! Go ahead and add one!</p>
+ 
 ```
 
 - Commit and push the change to the remote repo on GitHub.
