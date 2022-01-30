@@ -1,9 +1,24 @@
+//This terraform file deploys Phonebook Application to five Docker Machines on EC2 Instances  which are ready for Docker Swarm operations. Docker Machines will run on Amazon Linux 2  with custom security group allowing SSH (22), HTTP (80) UDP (4789, 7946),  and TCP(2377, 7946, 8080) connections from anywhere.
+//User needs to select appropriate key name when launching the template.
+/*
+terraform {
+  required_providers {
+    aws = {
+      source = "hashicorp/aws"
+      version = "3.60.0"
+    }
+  }
+}
+*/
+
+
 provider "aws" {
   region = "us-east-1"
   //  access_key = ""
   //  secret_key = ""
   //  If you have entered your credentials in AWS CLI before, you do not need to use these arguments.
 }
+
 
 locals {
   github-repo = "https://github.com/skoc10/phonebook_Dockerswarm_ECR.git"
@@ -51,7 +66,6 @@ data "template_file" "leader-master" {
     docker-compose config | docker stack deploy --with-registry-auth -c - phonebook
   EOF
 }
-
 data "template_file" "manager" {
   template = <<EOF
     #! /bin/bash
@@ -77,7 +91,6 @@ data "template_file" "manager" {
     ./aws/install
   EOF
 }
-
 data "template_file" "worker" {
   template = <<EOF
     #! /bin/bash
@@ -104,6 +117,7 @@ data "template_file" "worker" {
   EOF
 }
 
+
 resource "aws_ecr_repository" "ecr-repo" {
   name                 = "skoc10-repo/phonebook-app"
   image_tag_mutability = "MUTABLE"
@@ -114,12 +128,12 @@ resource "aws_ecr_repository" "ecr-repo" {
 }
 
 resource "aws_iam_instance_profile" "ec2ecr-profile" {
-  name = "aduncanswarmprofile"
+  name = "testswarmprofile"
   role = aws_iam_role.ec2fulltoecr.name
 }
 
 resource "aws_iam_role" "ec2fulltoecr" {
-  name = "aduncanec2roletoecr"
+  name = "testec2roletoecr"
   assume_role_policy = jsonencode({
     Version = "2012-10-17"
     Statement = [
@@ -169,11 +183,11 @@ resource "aws_instance" "docker-machine-leader-manager" {
       volume_size = 16
   }  
   //  Write your pem file name
-  security_groups = ["swarm-sec-gr"]
+  security_groups = ["test-docker-swarm-sec-gr"]
   iam_instance_profile = aws_iam_instance_profile.ec2ecr-profile.name
   user_data = data.template_file.leader-master.rendered
   tags = {
-    Name = "Swarm-Leader-Manager"
+    Name = "Davids-Docker-Swarm-Leader-Manager"
   }
 }
 
@@ -182,12 +196,12 @@ resource "aws_instance" "docker-machine-managers" {
   instance_type   = "t2.micro"
   key_name        = "key"
   //  Write your pem file name
-  security_groups = ["swarm-sec-gr"]
+  security_groups = ["test-docker-swarm-sec-gr"]
   iam_instance_profile = aws_iam_instance_profile.ec2ecr-profile.name
   count = 2
   user_data = data.template_file.manager.rendered
   tags = {
-    Name = "Swarm-Manager-${count.index + 1}"
+    Name = "Davids-Docker-Swarm-Manager-${count.index + 1}"
   }
   depends_on = [aws_instance.docker-machine-leader-manager]
 }
@@ -197,12 +211,12 @@ resource "aws_instance" "docker-machine-workers" {
   instance_type   = "t2.micro"
   key_name        = "key"
   //  Write your pem file name
-  security_groups = ["swarm-sec-gr"]
+  security_groups = ["test-docker-swarm-sec-gr"]
   iam_instance_profile = aws_iam_instance_profile.ec2ecr-profile.name
   count = 2
   user_data = data.template_file.worker.rendered
   tags = {
-    Name = "Swarm-Worker-${count.index + 1}"
+    Name = "Davids-Docker-Swarm-Worker-${count.index + 1}"
   }
   depends_on = [aws_instance.docker-machine-leader-manager]
 }
@@ -212,7 +226,7 @@ variable "sg-ports" {
   default = [80, 22, 2377, 7946, 8080]
 }
 resource "aws_security_group" "tf-docker-sec-gr" {
-  name = "swarm-sec-gr"
+  name = "test-docker-swarm-sec-gr"
   tags = {
     Name = "swarm-sec-gr"
   }
