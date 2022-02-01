@@ -61,7 +61,7 @@ data "template_file" "leader-master" {
     docker push "${aws_ecr_repository.ecr-repo.repository_url}:latest"
     mkdir -p /home/ec2-user/phonebook
     cd /home/ec2-user/phonebook && echo "ECR_REPO=${aws_ecr_repository.ecr-repo.repository_url}" > .env
-    curl -o "docker-compose.yml" -L ${local.github-file-url}docker-compose.yaml
+    curl -o "docker-compose.yml" -L ${local.github-file-url}docker-compose.yml
     curl -o "init.sql" -L ${local.github-file-url}init.sql
     docker-compose config | docker stack deploy --with-registry-auth -c - phonebook
   EOF
@@ -128,7 +128,7 @@ resource "aws_ecr_repository" "ecr-repo" {
 }
 
 resource "aws_iam_instance_profile" "ec2ecr-profile" {
-  name = "testswarmprofile"
+  name = "testswarmprofile2"
   role = aws_iam_role.ec2fulltoecr.name
 }
 
