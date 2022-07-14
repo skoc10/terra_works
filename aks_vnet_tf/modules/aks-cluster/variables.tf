@@ -76,7 +76,7 @@ variable "client_secret" {
 
 }
 variable "min_count" {
-  default     = 1
+  default     = 2
   description = "Minimum Node Count"
 }
 variable "max_count" {
