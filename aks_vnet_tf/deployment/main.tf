@@ -47,7 +47,7 @@ module "aks_cluster" {
   node_count               = var.node_count
   min_count                = var.min_count
   max_count                = var.max_count
-  os_disk_size_gb          = "1028"
+  os_disk_size_gb          = "256"
   max_pods                 = "110"
   vm_size                  = var.vm_size
   vnet_subnet_id           = module.aks_network.aks_subnet_id

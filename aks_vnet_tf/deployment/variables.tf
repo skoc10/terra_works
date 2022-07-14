@@ -85,7 +85,7 @@ variable "min_count" {
   description = "Minimum Node Count"
 }
 variable "max_count" {
-  default     = 2
+  default     = 4
   description = "Maximum Node Count"
 }
 
