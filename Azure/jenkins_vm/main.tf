@@ -3,7 +3,13 @@
 ################################################
 
 ### General
-
+provider "azurerm" {
+  # tenant_id       = "xxxxx"
+  # subscription_id = "xxxxx"
+  # client_id       = "xxxxx"
+  # client_secret   = "xxxxx"
+  features {}
+}
 resource "azurerm_resource_group" "rg" {
   name     = "${var.resource_group_name}"
   location = "${var.location}"
@@ -22,7 +28,7 @@ resource "azurerm_virtual_network" "vnet" {
 resource "azurerm_subnet" "subnet" {
   name                 = "${var.subnet_name}"
   resource_group_name  = "${azurerm_resource_group.rg.name}"
-  address_prefix       = "10.0.0.0/24"
+  address_prefixes     = ["10.0.1.0/24"]
   virtual_network_name = "${azurerm_virtual_network.vnet.name}"
 }
 
@@ -30,7 +36,7 @@ resource "azurerm_public_ip" "pip" {
   name                         = "${var.public_ip_name}"
   location                     = "${azurerm_resource_group.rg.location}"
   resource_group_name          = "${azurerm_resource_group.rg.name}"
-  public_ip_address_allocation = "Static"
+  allocation_method            = "Static"
   domain_name_label            = "${var.public_domain_name}"
 }
 
@@ -57,7 +63,7 @@ resource "azurerm_network_security_group" "allows" {
     access                     = "Allow"
     protocol                   = "Tcp"
     source_port_range          = "*"
-    destination_port_range     = "443"
+    destination_port_range     = "80"
     source_address_prefix      = "*"
     destination_address_prefix = "*"
   }
@@ -67,7 +73,7 @@ resource "azurerm_network_interface" "nic" {
   name                      = "${var.network_interface_name}"
   location                  = "${azurerm_resource_group.rg.location}"
   resource_group_name       = "${azurerm_resource_group.rg.name}"
-  network_security_group_id = "${azurerm_network_security_group.allows.id}"
+  # network_security_group_id = "${azurerm_network_security_group.allows.id}"
 
   ip_configuration {
     name                          = "${var.network_interface_name}-configuration"
@@ -90,7 +96,7 @@ resource "azurerm_virtual_machine" "vm" {
   storage_image_reference {
     publisher = "Canonical"
     offer     = "UbuntuServer"
-    sku       = "16.04-LTS"
+    sku       = "18.04-LTS"
     version   = "latest"
   }
 
@@ -129,10 +135,9 @@ resource "azurerm_virtual_machine" "vm" {
       "sudo apt-get install make -y",
 
       # Go (put in PATH) & Terraform (not put in PATH)
-      "wget -q -O - https://storage.googleapis.com/golang/go1.9.2.linux-amd64.tar.gz | sudo tar -C /usr/local -xz",
-      "wget -q -O terraform_linux_amd64.zip https://releases.hashicorp.com/terraform/0.11.1/terraform_0.11.1_linux_amd64.zip",
-      "sudo unzip -d /usr/local/terraform terraform_linux_amd64.zip",
-      "sudo sh -c 'echo \"PATH=\\$PATH:/usr/local/go/bin\" >> /etc/profile'",
+      "sudo wget https://releases.hashicorp.com/terraform/0.12.18/terraform_0.12.18_linux_amd64.zip",
+      "sudo unzip terraform_0.12.18_linux_amd64.zip",
+      "sudo mv terraform /usr/local/bin/",
 
       # Ruby & Bundler
       "sudo apt-add-repository -y ppa:brightbox/ruby-ng",
@@ -147,8 +152,13 @@ resource "azurerm_virtual_machine" "vm" {
       "sudo apt-get update && sudo apt-get install azure-cli",
 
       # Jenkins
-      "wget -q -O - https://pkg.jenkins.io/debian/jenkins-ci.org.key | sudo apt-key add -",
-      "sudo sh -c 'echo \"deb http://pkg.jenkins.io/debian-stable binary/\" > /etc/apt/sources.list.d/jenkins.list'",
+      # "wget -q -O - https://pkg.jenkins.io/debian/jenkins-ci.org.key | sudo apt-key add -",
+      # "sudo sh -c 'echo \"deb http://pkg.jenkins.io/debian-stable binary/\" > /etc/apt/sources.list.d/jenkins.list'",
+      # "sudo apt-get update",
+      # "sudo apt-get install jenkins -y",
+      "sudo apt install openjdk-8-jdk",
+      "wget -q -O - https://pkg.jenkins.io/debian/jenkins.io.key | sudo apt-key add -",
+      "sudo sh -c 'echo deb http://pkg.jenkins.io/debian-stable binary/ > /etc/apt/sources.list.d/jenkins.list'",
       "sudo apt-get update",
       "sudo apt-get install jenkins -y",
 
@@ -156,6 +166,10 @@ resource "azurerm_virtual_machine" "vm" {
       "sudo sh -c 'echo \"jenkins ALL=(ALL) NOPASSWD: ALL\" >> /etc/sudoers'",
 
       "sudo reboot",
+      "systemctl start jenkins",
+      "systemctl enable jenkins",
+      "systemctl status jenkins",
+
     ]
   }
 }
