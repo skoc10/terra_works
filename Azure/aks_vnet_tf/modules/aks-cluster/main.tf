@@ -20,7 +20,7 @@ resource "azurerm_kubernetes_cluster" "cluster" {
 
     tags = merge(
     {
-       "environment" = "runitoncloud"
+       "Environment" = "abp_aks"
     },
     {
       "aadssh" = "True"

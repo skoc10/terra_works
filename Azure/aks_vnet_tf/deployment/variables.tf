@@ -9,22 +9,22 @@ variable "node_count" {
 
 variable "dns_prefix" {
   description = "DNS Suffix"
-  default     = "runitoncloud"
+  default     = "abpaks"
 }
 
 variable cluster_name {
   description = "AKS cluster name"
-  default     = "runItOnCloud"
+  default     = "abp_aks"
 }
 
 variable resource_group_name {
   description = "name of the resource group to deploy AKS cluster in"
-  default     = "runitoncloud"
+  default     = "abp_aks"
 }
 
 variable location {
   description = "azure location to deploy resources"
-  default     = "eastus"
+  default     = "uksouth"
 }
 
 variable log_analytics_workspace_name {
@@ -33,7 +33,7 @@ variable log_analytics_workspace_name {
 
 # refer https://azure.microsoft.com/global-infrastructure/services/?products=monitor for log analytics available regions
 variable log_analytics_workspace_location {
-  default = "eastus"
+  default = "uksouth"
 }
 
 # refer https://azure.microsoft.com/pricing/details/monitor/ for log analytics pricing
@@ -43,12 +43,12 @@ variable log_analytics_workspace_sku {
 
 variable subnet_name {
   description = "subnet id where the nodes will be deployed"
-  default     = "runitoncloud-subnet"
+  default     = "abp_aks-subnet"
 }
 
 variable vnet_name {
   description = "vnet id where the nodes will be deployed"
-  default     = "runitoncloud-vnet"
+  default     = "abp_aks-vnet"
 }
 
 variable subnet_cidr {
@@ -63,12 +63,12 @@ variable kubernetes_version {
 
 variable "vm_size" {
   description = "size/type of VM to use for nodes"
-  default     = "Standard_D2_v2"
+  default     = "Standard_D2ads_v5"
 }
 
 variable "os_disk_size_gb" {
   description = "size of the OS disk to attach to the nodes"
-  default     = 128
+  default     = 64
 }
 
 variable "max_pods" {
