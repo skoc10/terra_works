@@ -48,7 +48,7 @@ resource "azurerm_kubernetes_cluster" "cluster" {
     }
 
   lifecycle {
-    prevent_destroy = true
+    prevent_destroy = false
   }
 }
 
