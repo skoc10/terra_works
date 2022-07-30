@@ -24,7 +24,7 @@ variable resource_group_name {
 
 variable location {
   description = "azure location to deploy resources"
-  default     = "uksouth"
+  default     = "Australia East"
 }
 
 variable log_analytics_workspace_name {
@@ -33,7 +33,7 @@ variable log_analytics_workspace_name {
 
 # refer https://azure.microsoft.com/global-infrastructure/services/?products=monitor for log analytics available regions
 variable log_analytics_workspace_location {
-  default = "uksouth"
+  default = "Australia East"
 }
 
 # refer https://azure.microsoft.com/pricing/details/monitor/ for log analytics pricing
@@ -63,7 +63,7 @@ variable kubernetes_version {
 
 variable "vm_size" {
   description = "size/type of VM to use for nodes"
-  default     = "Standard_D2ads_v5"
+  default     = "standard_dc2ds_v3"
 }
 
 variable "os_disk_size_gb" {
