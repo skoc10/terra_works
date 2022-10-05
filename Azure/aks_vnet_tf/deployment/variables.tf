@@ -4,7 +4,7 @@ variable "client_secret" {}
 
 variable "node_count" {
   description = "number of nodes to deploy"
-  default     = 2
+  default     = 1
 }
 
 variable "dns_prefix" {
@@ -24,7 +24,7 @@ variable resource_group_name {
 
 variable location {
   description = "azure location to deploy resources"
-  default     = "Australia East"
+  default     = "eastus"
 }
 
 variable log_analytics_workspace_name {
@@ -33,7 +33,7 @@ variable log_analytics_workspace_name {
 
 # refer https://azure.microsoft.com/global-infrastructure/services/?products=monitor for log analytics available regions
 variable log_analytics_workspace_location {
-  default = "Australia East"
+  default = "eastus"
 }
 
 # refer https://azure.microsoft.com/pricing/details/monitor/ for log analytics pricing
@@ -53,17 +53,17 @@ variable vnet_name {
 
 variable subnet_cidr {
   description = "the subnet cidr range"
-  default     = "10.2.32.0/21"
+  default     = ["10.2.32.0/21"]
 }
 
 variable kubernetes_version {
   description = "version of the kubernetes cluster"
-  default     = "1.22.6"
+  default     = "1.24.3"
 }
 
 variable "vm_size" {
   description = "size/type of VM to use for nodes"
-  default     = "standard_dc2ds_v3"
+  default     = "standard_E2as_v4"
 }
 
 variable "os_disk_size_gb" {
@@ -85,7 +85,7 @@ variable "min_count" {
   description = "Minimum Node Count"
 }
 variable "max_count" {
-  default     = 4
+  default     =2
   description = "Maximum Node Count"
 }
 

@@ -1,4 +1,4 @@
-provider "azurerm" {
-  version = "~> 2.4"
-  features {}
-}
+# provider "azurerm" {
+#   version = "~> 2.4"
+#   features {}
+# }
